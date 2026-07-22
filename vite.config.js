@@ -8,7 +8,14 @@ export default defineConfig({
   base: '/calories/',
   plugins: [
     tailwindcss(),
-    svelte(),
+    svelte({
+      onwarn: (warning, handler) => {
+        if (warning.code.startsWith('a11y-')) {
+          throw new Error(warning.message);
+        }
+        handler(warning);
+      }
+    }),
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: {

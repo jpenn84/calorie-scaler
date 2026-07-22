@@ -485,7 +485,7 @@
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-xl max-w-sm w-full space-y-4">
       <div class="flex justify-between items-start">
         <h3 class="text-lg font-bold text-white">Install Calorie Scaler</h3>
-        <button on:click={() => showIOSPrompt = false} class="text-slate-400 hover:text-white p-1">
+        <button on:click={() => showIOSPrompt = false} class="text-slate-400 hover:text-white p-1" aria-label="Close">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
