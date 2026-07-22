@@ -174,15 +174,26 @@
       </div>
     </div>
     
-    {#if !isStandalone && (deferredPrompt || isIOS)}
-      <button 
-        on:click={handleInstallClick}
+    <div class="flex items-center gap-2">
+      <a
+        href="https://github.com/jpenn84/calorie-scaler"
+        target="_blank"
+        rel="noopener noreferrer"
         class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors active-scale border border-slate-700 shadow-sm"
-        title="Install App"
+        title="View on GitHub"
       >
-        <i class="fa-solid fa-download"></i>
-      </button>
-    {/if}
+        <i class="fa-brands fa-github text-lg"></i>
+      </a>
+      {#if !isStandalone && (deferredPrompt || isIOS)}
+        <button 
+          on:click={handleInstallClick}
+          class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors active-scale border border-slate-700 shadow-sm"
+          title="Install App"
+        >
+          <i class="fa-solid fa-download"></i>
+        </button>
+      {/if}
+    </div>
   </header>
 
   <!-- Main Content Container -->
