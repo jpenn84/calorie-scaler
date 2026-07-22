@@ -1,4 +1,32 @@
 <script>
+  import { onMount } from 'svelte';
+
+  let isStandalone = false;
+  let isIOS = false;
+  let deferredPrompt = null;
+  let showIOSPrompt = false;
+
+  onMount(() => {
+    isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    isIOS = /ipad|iphone|ipod/.test(window.navigator.userAgent.toLowerCase()) || (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+  });
+
+  async function handleInstallClick() {
+    if (isIOS) {
+      showIOSPrompt = true;
+    } else if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        deferredPrompt = null;
+      }
+    }
+  }
   let labelCalories = null;
   let labelPortion = null;
   let labelUnit = "Unit";
@@ -124,7 +152,7 @@
   >
     <div class="flex items-center space-x-2">
       <div
-        class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-brand-500/20"
+        class="w-9 h-9 rounded-xl bg-linear-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-brand-500/20"
       >
         <i class="fa-solid font-black fa-scale-balanced text-sm"></i>
       </div>
@@ -139,6 +167,16 @@
         </p>
       </div>
     </div>
+    
+    {#if !isStandalone && (deferredPrompt || isIOS)}
+      <button 
+        on:click={handleInstallClick}
+        class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors active-scale border border-slate-700 shadow-sm"
+        title="Install App"
+      >
+        <i class="fa-solid fa-download"></i>
+      </button>
+    {/if}
   </header>
 
   <!-- Main Content Container -->
@@ -169,7 +207,10 @@
         <!-- Label Calories -->
         <div>
           <div class="flex items-center gap-1.5 mb-1">
-            <label class="block text-xs font-semibold text-slate-400">
+            <label
+              for="labelCaloriesInput"
+              class="block text-xs font-semibold text-slate-400"
+            >
               Nutrition Label Calories
             </label>
             <div class="group relative flex items-center">
@@ -177,18 +218,19 @@
                 class="fa-regular fa-circle-question text-slate-500 hover:text-slate-300 text-xs cursor-pointer transition-colors"
               ></i>
               <div
-                class="absolute bottom-full left-[-10px] mb-2 w-48 p-2.5 bg-slate-800 text-[11px] font-medium text-slate-200 leading-snug rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 border border-slate-700 pointer-events-none text-left"
+                class="absolute bottom-full -left-2.5 mb-2 w-48 p-2.5 bg-slate-800 text-[11px] font-medium text-slate-200 leading-snug rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 border border-slate-700 pointer-events-none text-left"
               >
                 The total calories listed per serving on the product's nutrition
                 label.
                 <div
-                  class="absolute top-full left-[14px] border-[5px] border-transparent border-t-slate-800"
+                  class="absolute top-full left-3.5 border-[5px] border-transparent border-t-slate-800"
                 ></div>
               </div>
             </div>
           </div>
           <div class="relative flex items-center">
             <input
+              id="labelCaloriesInput"
               type="number"
               step="any"
               min="0"
@@ -209,7 +251,10 @@
         <!-- Label Portion Size & Unit -->
         <div>
           <div class="flex items-center gap-1.5 mb-1">
-            <label class="block text-xs font-semibold text-slate-400">
+            <label
+              for="labelPortionInput"
+              class="block text-xs font-semibold text-slate-400"
+            >
               Nutrition Label Portion Size
             </label>
             <div class="group relative flex items-center">
@@ -217,12 +262,12 @@
                 class="fa-regular fa-circle-question text-slate-500 hover:text-slate-300 text-xs cursor-pointer transition-colors"
               ></i>
               <div
-                class="absolute bottom-full left-[-10px] mb-2 w-48 p-2.5 bg-slate-800 text-[11px] font-medium text-slate-200 leading-snug rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 border border-slate-700 pointer-events-none text-left"
+                class="absolute bottom-full -left-2.5 mb-2 w-48 p-2.5 bg-slate-800 text-[11px] font-medium text-slate-200 leading-snug rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 border border-slate-700 pointer-events-none text-left"
               >
                 The serving size amount listed on the label (e.g., 28g, 1 cup,
                 or 2 slices).
                 <div
-                  class="absolute top-full left-[14px] border-[5px] border-transparent border-t-slate-800"
+                  class="absolute top-full left-3.5 border-[5px] border-transparent border-t-slate-800"
                 ></div>
               </div>
             </div>
@@ -230,6 +275,7 @@
           <div class="grid grid-cols-12 gap-2">
             <div class="col-span-6 relative flex items-center">
               <input
+                id="labelPortionInput"
                 type="number"
                 step="any"
                 min="0"
@@ -287,11 +333,11 @@
               class="fa-regular fa-circle-question text-slate-400 hover:text-brand-300 text-xs cursor-pointer transition-colors"
             ></i>
             <div
-              class="absolute bottom-full left-[-10px] mb-2 w-48 p-2.5 bg-slate-800 text-[11px] font-medium text-slate-200 leading-snug rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 border border-slate-700 pointer-events-none text-left tracking-normal font-sans"
+              class="absolute bottom-full -left-2.5 mb-2 w-48 p-2.5 bg-slate-800 text-[11px] font-medium text-slate-200 leading-snug rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 border border-slate-700 pointer-events-none text-left tracking-normal font-sans"
             >
               The actual amount of food you are planning to eat.
               <div
-                class="absolute top-full left-[14px] border-[5px] border-transparent border-t-slate-800"
+                class="absolute top-full left-3.5 border-[5px] border-transparent border-t-slate-800"
               ></div>
             </div>
           </div>
@@ -413,3 +459,25 @@
     </div>
   </footer>
 </div>
+
+{#if showIOSPrompt}
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-xl max-w-sm w-full space-y-4">
+      <div class="flex justify-between items-start">
+        <h3 class="text-lg font-bold text-white">Install Calorie Scaler</h3>
+        <button on:click={() => showIOSPrompt = false} class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <p class="text-slate-300 text-sm">
+        To install this app on your iPhone or iPad, tap the <i class="fa-solid fa-arrow-up-from-bracket mx-1"></i> <strong>Share</strong> button at the bottom of Safari and select <strong>"Add to Home Screen"</strong>.
+      </p>
+      <button 
+        on:click={() => showIOSPrompt = false}
+        class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl transition-colors"
+      >
+        Got it!
+      </button>
+    </div>
+  </div>
+{/if}
