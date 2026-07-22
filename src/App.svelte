@@ -69,9 +69,15 @@
     "Generic";
   $: myUnitGroups = unitGroups.filter((g) => g.group === currentGroup);
 
-  // Auto-update 'myUnit' if the category changes and the current selection is no longer valid
+  let previousLabelUnit = "Unit";
+
+  // Auto-update 'myUnit' to match 'labelUnit' when 'labelUnit' changes,
+  // or if the current 'myUnit' is no longer valid for the category.
   $: {
-    if (myUnitGroups.length > 0) {
+    if (labelUnit !== previousLabelUnit) {
+      myUnit = labelUnit;
+      previousLabelUnit = labelUnit;
+    } else if (myUnitGroups.length > 0) {
       const isValid = myUnitGroups[0].units.some((u) => u.id === myUnit);
       if (!isValid) {
         myUnit = myUnitGroups[0].units[0].id;

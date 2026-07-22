@@ -105,4 +105,12 @@ test.describe('Calorie Scaler App', () => {
       'Unit'
     ]);
   });
+  test('should automatically select the same unit for My Serving Size when Label Unit is changed', async ({ page }) => {
+    // Select Ounces (oz) for Label Unit (the 2nd weight unit option)
+    await page.locator('select[aria-label="Unit selection"]').first().selectOption('oz');
+
+    // Verify My Serving Size unit is automatically set to Ounces (oz)
+    const myUnitSelect = page.locator('select[aria-label="Unit selection"]').nth(1);
+    await expect(myUnitSelect).toHaveValue('oz');
+  });
 });
