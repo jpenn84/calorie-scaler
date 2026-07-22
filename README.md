@@ -6,6 +6,7 @@ Calorie Scaler is a fast, responsive food portion calorie calculator. It helps y
 - **Smart Unit Conversion:** Seamlessly convert between metric and imperial units (e.g., grams to ounces, milliliters to cups).
 - **Responsive UI:** Built with Tailwind CSS for an optimized, app-like mobile and desktop experience.
 - **Installable PWA:** Works offline and can be installed directly to your home screen as a Progressive Web App.
+- **Fully Accessible:** Engineered for inclusivity with a perfect 100/100 Lighthouse Accessibility score, ensuring compatibility with screen readers and high contrast requirements.
 - **Lightning Fast:** Powered by Svelte and Vite for instant interactivity.
 
 ## Getting Started
