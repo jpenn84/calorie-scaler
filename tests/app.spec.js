@@ -41,16 +41,17 @@ test.describe('Calorie Scaler App', () => {
     // Assert there are no violations
     expect(accessibilityScanResults.violations).toEqual([]);
   });
+
   test('should calculate calories correctly with different units (ml to L)', async ({ page }) => {
     await page.locator('#labelCaloriesInput').fill('200');
     await page.locator('#labelPortionInput').fill('100');
-    
+
     // Select Milliliters (ml) for Label Unit
     await page.locator('select[aria-label="Unit selection"]').first().selectOption('ml');
-    
+
     // Select Liters (L) for My Serving Unit
     await page.locator('select[aria-label="Unit selection"]').nth(1).selectOption('l');
-    
+
     // Fill in My Serving Size
     await page.locator('#myServingInput').fill('0.5');
 
@@ -65,7 +66,7 @@ test.describe('Calorie Scaler App', () => {
 
     // Get all options in the My Serving Unit dropdown
     const myUnitOptions = page.locator('select[aria-label="Unit selection"]').nth(1).locator('option');
-    
+
     // Assert the text matches exactly the weight options
     await expect(myUnitOptions).toHaveText([
       'Grams (g)',
@@ -82,7 +83,7 @@ test.describe('Calorie Scaler App', () => {
 
     // Get all options in the My Serving Unit dropdown
     const myUnitOptions = page.locator('select[aria-label="Unit selection"]').nth(1).locator('option');
-    
+
     // Assert the text matches exactly the volume options
     await expect(myUnitOptions).toHaveText([
       'Milliliters (ml)',
@@ -93,13 +94,14 @@ test.describe('Calorie Scaler App', () => {
       'Liters (L)'
     ]);
   });
+
   test('should only allow generic units for My Serving Size when Label uses generic units', async ({ page }) => {
     // Select Unit for Label Unit (which is a generic unit)
     await page.locator('select[aria-label="Unit selection"]').first().selectOption('Unit');
 
     // Get all options in the My Serving Unit dropdown
     const myUnitOptions = page.locator('select[aria-label="Unit selection"]').nth(1).locator('option');
-    
+
     // Assert the text matches exactly the generic options
     await expect(myUnitOptions).toHaveText([
       'Unit'
