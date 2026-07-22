@@ -348,6 +348,7 @@
       <div class="grid grid-cols-12 gap-2 mb-3">
         <div class="col-span-6 relative flex items-center">
           <input
+            id="myServingInput"
             type="number"
             step="any"
             min="0"

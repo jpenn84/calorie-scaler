@@ -34,6 +34,16 @@ Create a production-ready build in the `dist` folder:
 npm run build
 ```
 
+### Testing
+This project uses Playwright for end-to-end and accessibility testing. To run the tests:
+```bash
+npm run test
+```
+To view the HTML report of the test results:
+```bash
+npx playwright show-report
+```
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0 (GPL-3.0) - see the [LICENSE](LICENSE) file for details.
